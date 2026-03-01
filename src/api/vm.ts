@@ -29,43 +29,49 @@ export interface WrappedVariable {
     target: string;
 }
 
+export function wrapVariable(
+    scratchVariable: VM.Variable,
+    vm: Wrapper<WrappedVM>,
+    targetName: string
+): WrappedVariable {
+    const wrappedVariable: WrappedVariable = {
+        name: scratchVariable.name,
+        value: scratchVariable.value,
+        isList: scratchVariable.type === "list",
+        target: targetName,
+    };
+    Object.defineProperty(scratchVariable, "value", {
+        configurable: true,
+        set(newValue) {
+            wrappedVariable.value = newValue;
+        },
+        get() {
+            return wrappedVariable.value;
+        },
+    });
+    Object.defineProperty(scratchVariable, "name", {
+        configurable: true,
+        set(newValue) {
+            const oldVariable = vm.get().findWatching(wrappedVariable.target, wrappedVariable.name);
+            if (oldVariable) {
+                oldVariable.name = newValue;
+            }
+            wrappedVariable.name = newValue;
+            vm.updateOnly();
+        },
+        get() {
+            return wrappedVariable.name;
+        },
+    });
+    return wrappedVariable;
+}
 export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
     const cast = (scratchTargets: VM.Target[]) => {
         wrappedVM.get().targets = scratchTargets.map((scratchTarget: VM.Target): WrappedTarget => {
+            const currentName = `${scratchTarget.getName()}${!scratchTarget.isOriginal ? `#${scratchTarget.id}` : "@self"}`;
             const wrappedTarget: WrappedTarget = {
-                name: scratchTarget.getName(),
-                variables: Object.values(scratchTarget.variables).map((scratchVariable: VM.Variable): WrappedVariable => {
-                    const wrappedVariable: WrappedVariable = {
-                        name: scratchVariable.name,
-                        value: scratchVariable.value,
-                        isList: scratchVariable.type === "list",
-                        target: scratchTarget.getName(),
-                    };
-                    Object.defineProperty(scratchVariable, "value", {
-                        configurable: true,
-                        set(newValue) {
-                            wrappedVariable.value = newValue;
-                        },
-                        get() {
-                            return wrappedVariable.value;
-                        },
-                    });
-                    Object.defineProperty(scratchVariable, "name", {
-                        configurable: true,
-                        set(newValue) {
-                            const oldVariable = wrappedVM.get().findWatching(wrappedVariable.target, wrappedVariable.name);
-                            if (oldVariable) {
-                                oldVariable.name = newValue;
-                            }
-                            wrappedVariable.name = newValue;
-                            wrappedVM.updateOnly();
-                        },
-                        get() {
-                            return wrappedVariable.name;
-                        },
-                    });
-                    return wrappedVariable;
-                }),
+                name: currentName,
+                variables: Object.values(scratchTarget.variables).map(v => wrapVariable(v, wrappedVM, currentName)),
                 isStage: scratchTarget.isStage,
                 isClone: !scratchTarget.isOriginal
             };
@@ -75,7 +81,7 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
                     if (orig) {
                         wrappedTarget.variables = wrappedTarget.variables.filter(e => e !== orig);
                     }
-                    wrappedTarget.variables.push(newValue);
+                    wrappedTarget.variables.push(wrapVariable(newValue, wrappedVM, currentName));
                     wrappedVM.updateOnly();
                     return Reflect.set(target, p, newValue, receiver);
                 },

@@ -23,7 +23,6 @@ export default createComponent({
             .backgroundColor("rgba(0,0,0,0.05)")
     ]
 }, ({ data, showing }) => {
-
     return tree("div")
         .on("click", () => showing.set(!showing.get()))
         .class("sprite")
