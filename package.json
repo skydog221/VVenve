@@ -4,8 +4,12 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "test": "run-s build:tsc start",
+        "start": "node",
         "dev": "tsup --watch --env.NODE_ENV development",
+        "dev:tsc": "tsc --watch",
         "build": "tsup --env.NODE_ENV production",
+        "build:tsc": "tsc",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "check-type": "tsc --noEmit"
@@ -17,9 +21,11 @@
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@turbowarp/types": "^0.0.14",
+        "@types/node": "^25.3.3",
         "eslint": "^10.0.2",
         "globals": "^17.3.0",
         "jiti": "^2.6.1",
+        "playwright": "^1.58.2",
         "tsup": "^8.5.1",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.56.1"

@@ -10,6 +10,7 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "declaration": true,
+        "outDir": "dist/native",
         "typeRoots": [
             "node_modules",
             "node_modules/@types",
@@ -17,7 +18,8 @@
         ],
         "types": [
             "@turbowarp/types",
-            "module.d.ts"
+            "module.d.ts",
+            "node"
         ],
         "paths": {
             "nine": [
