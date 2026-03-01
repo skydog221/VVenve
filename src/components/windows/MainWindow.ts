@@ -3,9 +3,9 @@ import SubWindow from "../SubWindow";
 import Logo from "../Logo";
 import { isVMObtained, wrappedVM } from "../../state/vm";
 import vm from "$/vm";
-import SpriteTarget from "../target/SpriteTarget";
 import Button from "../Button";
 import { mainShowing, watcherShowing } from "src/state/window";
+import SpriteTarget from "../target/SpriteTarget";
 
 export default createComponent({
     styles: [
@@ -38,7 +38,10 @@ export default createComponent({
                                 .class("sprites")
                                 .append(
                                     Button({ text: "视奸变量" }).$.on("click", () => watcherShowing.set(true)),
-                                    $(sync(() => wrappedVM.targets.map(t => SpriteTarget({ data: t }))))
+                                    $(sync(
+                                        () => wrappedVM!.get().targets.map(t => SpriteTarget({ data: t })),
+                                        [wrappedVM]
+                                    ))
                                 )
                     )
                 )

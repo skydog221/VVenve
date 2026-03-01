@@ -1,8 +1,12 @@
-import { $, createComponent, styleSet, sync, tree, typed, when, wrap } from "nine";
-import VariableTarget from "./VariableTarget";
+import { $, createComponent, styleSet, sync, tree, typed, when, wrap, Wrapper } from "nine";
+import VariableTarget, { WrappedVariable } from "./VariableTarget";
 import Label from "../Label";
-import { WrappedTarget } from "src/state/vm";
 
+export interface WrappedTarget {
+    name: string;
+    variables: Wrapper<WrappedVariable>[];
+    isStage: boolean;
+}
 export default createComponent({
     props: {
         data: {
@@ -29,8 +33,9 @@ export default createComponent({
                 .append(sync(() => `${data.get().isStage ? "舞台" : data.get().name} ${showing.get() ? "▣" : "▢"}`, [showing])),
             when(showing, () =>
                 tree("div")
-                    .append($(sync(() =>
-                        Object.values(data.get().variables).map(v => VariableTarget({ data: v }))
+                    .append($(sync(
+                        () => Object.values(data.get().variables).map(v => VariableTarget({ data: v })),
+                        [data]
                     ))))
         );
 });

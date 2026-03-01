@@ -1,10 +1,15 @@
 import { createComponent, styleSet, sync, tree, typed, when, Wrapper } from "nine";
 import Label from "../Label";
-import { WrappedVariable } from "src/state/vm";
 import Button from "../Button";
-import { removeWatching, watchings } from "src/state/watch";
+import { isWatching, removeWatching, toggleWatching, watchings } from "src/state/watch";
 import ValueInput from "../ValueInput";
+import { ScratchValue } from "src/api/variable";
 
+export interface WrappedVariable {
+    name: string;
+    value: Wrapper<ScratchValue>;
+    isList: boolean
+}
 export default createComponent({
     props: {
         data: {
@@ -56,14 +61,11 @@ export default createComponent({
                         () => !watching.get(),
                         () => Button({
                             text: sync(() =>
-                                watchings.get().includes(data.get()) ? "🔪" : "👁️",
+                                isWatching(data) ? "🔪" : "👁️",
                                 [watchings])
                         }).$
                             .class("right")
-                            .on.stop("click", () => {
-                                if (watchings.get().includes(data.get())) removeWatching(data.get());
-                                else watchings.get().push(data.get());
-                            })
+                            .on.stop("click", () => toggleWatching(data))
                         , [watching]
                     )
                 ),
@@ -76,7 +78,7 @@ export default createComponent({
             )
         ).on("click", () => {
             if (watching.get()) {
-                removeWatching(data.get());
+                removeWatching(data);
             }
         });
 });
