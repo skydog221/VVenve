@@ -24,7 +24,12 @@ export default createComponent({
                     when(
                         isVMObtained,
                         () =>
-                            Button({ text: "打印到控制台" }).on("click", () => console.log(vm)),
+                            Button({ text: "打印到控制台" }).$.on("click", () => console.log(vm)),
+                    ),
+                    when(
+                        isVMObtained,
+                        () =>
+                            Button({ text: "设置为VVENVE" }).$.on("click", () => window.VVENVE = vm!),
                     ),
                     when(
                         isVMObtained,
