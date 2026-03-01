@@ -24,7 +24,7 @@ export interface VariableReference {
 }
 export interface WrappedVariable {
     name: string;
-    value: ScratchValue;
+    value: Wrapper<ScratchValue>;
     isList: boolean;
     target: string;
 }
@@ -36,17 +36,17 @@ export function wrapVariable(
 ): WrappedVariable {
     const wrappedVariable: WrappedVariable = {
         name: scratchVariable.name,
-        value: scratchVariable.value,
+        value: wrap(scratchVariable.value),
         isList: scratchVariable.type === "list",
         target: targetName,
     };
     Object.defineProperty(scratchVariable, "value", {
         configurable: true,
         set(newValue) {
-            wrappedVariable.value = newValue;
+            wrappedVariable.value.set(newValue);
         },
         get() {
-            return wrappedVariable.value;
+            return wrappedVariable.value.get();
         },
     });
     Object.defineProperty(scratchVariable, "name", {

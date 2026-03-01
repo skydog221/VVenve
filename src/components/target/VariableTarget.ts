@@ -1,6 +1,6 @@
-import { createComponent, styleSet, sync, tree, typed, when } from "nine";
+import { createComponent, HostTree, styleSet, sync, tree, typed, when, Wrapper } from "nine";
 import Label from "../Label";
-import ValueInput from "../ValueInput";
+import ValueShow from "../ValueShow";
 import { WrappedVariable } from "src/api/vm";
 import { wrappedVM } from "src/state/vm";
 import { choice } from "src/util/random";
@@ -89,7 +89,7 @@ export default createComponent({
                 () =>
                     tree("div")
                         .class("watcher")
-                        .append(ValueInput({ value: "just test" }))
+                        .append(ValueShow({ value: data.get()?.value as Wrapper<string> }))
             )
         )
 });
