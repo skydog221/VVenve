@@ -3,6 +3,9 @@ import Label from "../Label";
 import ValueInput from "../ValueInput";
 import { WrappedVariable } from "src/api/vm";
 import { wrappedVM } from "src/state/vm";
+import { choice } from "src/util/random";
+import airTips from "src/constants/airTips";
+import watcherEmojis from "src/constants/watcherEmojis";
 
 export default createComponent({
     props: {
@@ -52,7 +55,9 @@ export default createComponent({
                 .class("var")
                 .on.stop("click", () => {
                     if (isAir.get()) {
-                        console.error("你不能视奸棍母");
+                        const tip = `${choice(watcherEmojis)}${choice(airTips)}${choice(watcherEmojis)}`;
+                        console.error(tip);
+                        alert(tip);
                         return;
                     }
                     if (watching.get()) return;
@@ -60,7 +65,7 @@ export default createComponent({
                 })
                 .append(
                     tree("span").class("indent"),
-                    Label({ text: data.get()?.isList ? "列表" : "变量" }),
+                    Label({ text: isAir.get() ? "？？？" : data.get()?.isList ? "列表" : "变量" }),
                     tree("span").class("text").append(sync(() => isAir.get() ? "棍母" : data.get()?.name, [data])),
                     when(
                         () => !watching.get(),
