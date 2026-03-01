@@ -2,13 +2,8 @@ import { createComponent, styleSet, sync, tree, typed, when } from "nine";
 import Label from "../Label";
 import { isWatching, removeWatching, toggleWatching, watchings } from "src/state/watch";
 import ValueInput from "../ValueInput";
-import { ScratchValue } from "src/api/variable";
+import { WrappedVariable } from "src/api/vm";
 
-export interface WrappedVariable {
-    name: string;
-    value: ScratchValue;
-    isList: boolean
-}
 export default createComponent({
     props: {
         data: {
@@ -22,6 +17,7 @@ export default createComponent({
     },
     styles: [
         styleSet(".var")
+            .padding("5px")
             .margin("5px 0")
             .marginLeft("10px")
             .alignItems("center")
@@ -52,7 +48,7 @@ export default createComponent({
         .append(
             tree("div")
                 .class("var")
-                .on("click", () => toggleWatching(data))
+                .on.stop("click", () => toggleWatching(data.get()))
                 .append(
                     tree("span").class("indent"),
                     Label({ text: data.get().isList ? "列表" : "变量" }),
@@ -63,7 +59,7 @@ export default createComponent({
                             .class("right")
                             .append(
                                 sync(
-                                    () => isWatching(data) ? "🔪" : "👁️",
+                                    () => isWatching(data.get()) ? "🔪" : "👁️",
                                     [watchings]
                                 )
                             )
@@ -79,7 +75,7 @@ export default createComponent({
             )
         ).on("click", () => {
             if (watching.get()) {
-                removeWatching(data);
+                removeWatching(data.get());
             }
         });
 });

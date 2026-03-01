@@ -18,8 +18,8 @@ export default createComponent({
             .transform("rotate(180deg)")
             .borderColor("orange"),
         styleSet(".logo")
-            .width("40px")
-            .height("40px")
+            .width("30px")
+            .height("30px")
     ],
     uuid: "Triangle"
 }, () => {

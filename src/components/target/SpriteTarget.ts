@@ -1,12 +1,8 @@
 import { $, createComponent, styleSet, sync, tree, typed, when } from "nine";
-import VariableTarget, { WrappedVariable } from "./VariableTarget";
+import VariableTarget from "./VariableTarget";
 import Label from "../Label";
+import { WrappedTarget } from "src/api/vm";
 
-export interface WrappedTarget {
-    name: string;
-    variables: WrappedVariable[];
-    isStage: boolean;
-}
 export default createComponent({
     props: {
         data: {
@@ -22,7 +18,7 @@ export default createComponent({
     styles: [
         styleSet(".sprite")
             .borderRadius("5px")
-            .padding("5px"),
+            .padding("10px 5px"),
         styleSet(".sprite:hover")
             .backgroundColor("rgba(0,0,0,0.05)")
     ]
@@ -38,7 +34,10 @@ export default createComponent({
             when(showing, () =>
                 tree("div")
                     .append($(sync(
-                        () => Object.values(data.get().variables).map(v => VariableTarget({ data: v })),
+                        () =>
+                            data.get().variables.length > 0
+                                ? data.get().variables.map(v => VariableTarget({ data: v }))
+                                : "该角色下无变量",
                         [data]
                     ))))
         );

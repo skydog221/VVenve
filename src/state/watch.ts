@@ -1,18 +1,18 @@
-import { wrap, Wrapper } from "nine";
-import { WrappedVariable } from "src/components/target/VariableTarget";
+import { wrap } from "nine";
+import { WrappedVariable } from "src/api/vm";
 
-export const watchings = wrap<Wrapper<WrappedVariable>[]>([]);
+export const watchings = wrap<WrappedVariable[]>([]);
 
-export function removeWatching(data: Wrapper<WrappedVariable>) {
+export function removeWatching(data: WrappedVariable) {
     watchings.set(watchings.get().filter(e => e !== data));
 }
-export function addWatching(data: Wrapper<WrappedVariable>) {
+export function addWatching(data: WrappedVariable) {
     watchings.get().push(data);
 }
-export function isWatching(data: Wrapper<WrappedVariable>) {
+export function isWatching(data: WrappedVariable) {
     return watchings.get().includes(data);
 }
-export function toggleWatching(data: Wrapper<WrappedVariable>) {
+export function toggleWatching(data: WrappedVariable) {
     if (isWatching(data)) {
         removeWatching(data);
     } else {
