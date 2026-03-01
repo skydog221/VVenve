@@ -37,7 +37,7 @@ export default createComponent({
                         () =>
                             data.get().variables.length > 0
                                 ? data.get().variables.map(v => VariableTarget({ data: v }))
-                                : "该角色下无变量",
+                                : VariableTarget({ isAir: true }),
                         [data]
                     ))))
         );

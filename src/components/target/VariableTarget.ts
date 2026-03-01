@@ -11,7 +11,9 @@ export default createComponent({
         },
         watching: {
             transform: Boolean,
-            shadow: false
+        },
+        isAir: {
+            transform: Boolean,
         }
     },
     styles: [
@@ -20,6 +22,7 @@ export default createComponent({
             .margin("5px 0")
             .marginLeft("10px")
             .alignItems("center")
+            .borderRadius("5px")
             .display("flex")
             .flexDirection("row"),
         styleSet(".var:hover")
@@ -41,24 +44,31 @@ export default createComponent({
         styleSet(".watcher"),
     ],
     uuid: "VariableTarget"
-}, ({ data, watching }) => {
+}, ({ data, watching, isAir }) => {
     return tree("div")
         .class("var-watcher")
         .append(
             tree("div")
                 .class("var")
-                .on.stop("click", () => wrappedVM?.get().toggleWatch(data.get().target, data.get().name))
+                .on.stop("click", () => {
+                    if (isAir.get()) {
+                        console.error("你不能视奸棍母");
+                        return;
+                    }
+                    if (watching.get()) return;
+                    wrappedVM?.get().toggleWatch(data.get().target, data.get().name)
+                })
                 .append(
                     tree("span").class("indent"),
-                    Label({ text: data.get().isList ? "列表" : "变量" }),
-                    tree("span").class("text").append(sync(() => data.get().name, [data])),
+                    Label({ text: data.get()?.isList ? "列表" : "变量" }),
+                    tree("span").class("text").append(sync(() => isAir.get() ? "棍母" : data.get()?.name, [data])),
                     when(
                         () => !watching.get(),
                         () => tree("span")
                             .class("right")
                             .append(
                                 sync(
-                                    () => wrappedVM?.get().isWatching(data.get().target, data.get().name) ? "🔪" : "👁️",
+                                    () => (isAir.get() ? "🚫" : "") + (wrappedVM?.get().isWatching(data.get()?.target, data.get()?.name) ? "🔪" : "👁️"),
                                     [wrappedVM]
                                 )
                             )
@@ -74,7 +84,7 @@ export default createComponent({
             )
         ).on("click", () => {
             if (watching.get()) {
-                wrappedVM?.get().removeWatch(data.get().target, data.get().name);
+                wrappedVM?.get().removeWatch(data.get()?.target, data.get().name);
             }
         });
 });

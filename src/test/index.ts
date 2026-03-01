@@ -16,6 +16,8 @@ const mill = async (time: number) => new Promise<void>(resolve => setTimeout(res
     await mill(100);//防止ccw出一些莫名其妙bug
 
     const code = await fs.readFile("dist/index.js", "utf-8");
-    await page.evaluate(code => window.injectVVenve = () => eval(code), code);
+    await page.evaluate(code => {
+        window.addEventListener("click", () => eval(code), { once: true });
+    }, code);
     browser.on("disconnected", () => process.exit(0));
 })();
