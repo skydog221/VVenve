@@ -91,9 +91,5 @@ export default createComponent({
                         .class("watcher")
                         .append(ValueInput({ value: "just test" }))
             )
-        ).on("click", () => {
-            if (watching.get()) {
-                wrappedVM?.get().removeWatch(data.get()?.target, data.get().name);
-            }
-        });
+        )
 });
