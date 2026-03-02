@@ -1,4 +1,4 @@
-import { createComponent, HostTree, styleSet, sync, tree, typed, when, Wrapper } from "nine";
+import { createComponent, styleSet, sync, tree, typed, when, Wrapper } from "nine";
 import Label from "../Label";
 import ValueShow from "../ValueShow";
 import { WrappedVariable } from "src/api/vm";
@@ -61,7 +61,7 @@ export default createComponent({
                         return;
                     }
                     if (watching.get()) return;
-                    wrappedVM?.get().toggleWatch(data.get().target, data.get().name)
+                    wrappedVM?.get().toggleWatch(data.get().target, data.get().name);
                 })
                 .append(
                     tree("span").class("indent"),
@@ -91,5 +91,5 @@ export default createComponent({
                         .class("watcher")
                         .append(ValueShow({ value: data.get()?.value as Wrapper<string> }))
             )
-        )
+        );
 });

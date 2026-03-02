@@ -3,7 +3,7 @@ import SubWindow from "../SubWindow";
 import { isVMObtained, wrappedVM } from "../../state/vm";
 import vm from "$/vm";
 import Button from "../Button";
-import { mainShowing, watcherShowing } from "src/state/window";
+import { mainShowing, projectShowing, watcherShowing } from "src/state/window";
 import SpriteTarget from "../target/SpriteTarget";
 
 export default createComponent({
@@ -38,6 +38,7 @@ export default createComponent({
                             tree("div")
                                 .class("sprites")
                                 .append(
+                                    Button({ text: "项目管理器" }).$.on("click", () => projectShowing.set(true)),
                                     Button({ text: "视奸变量" }).$.on("click", () => watcherShowing.set(true)),
                                     $(sync(
                                         () => wrappedVM!.get().targets.map(t => {
