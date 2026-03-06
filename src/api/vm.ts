@@ -5,6 +5,8 @@ export interface WrappedVM {
     targets: WrappedTarget[];
     findVariable(target: string, name: string): WrappedVariable | null;
 
+    setVariable(target: string, name: string, value: ScratchValue): void;
+
     watchings: VariableReference[];
     addWatch(target: string, name: string): void;
     toggleWatch(target: string, name: string): void;
@@ -110,6 +112,14 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
         targets: [],
         findVariable(target, name) {
             return this.targets.find(e => e.name === target)?.variables.find(e => e.name === name) || null;
+        },
+
+        setVariable(target, name, value) {
+            const variable = this.findVariable(target, name);
+            if (!variable) return;
+
+            variable.value.set(value);
+            wrappedVM.updateOnly();
         },
 
         watchings: [],
